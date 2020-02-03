@@ -24,7 +24,7 @@ fi
 
 
 envs="BUILD_TYPE=${BUILD_TYPE} LOG_TYPE=${LOG_TYPE}"
-fuzzer="../angora_fuzzer"
+fuzzer="../../angora_fuzzer"
 input="./input"
 output="./output"
 
@@ -41,12 +41,16 @@ echo "Compile..."
 target=${name}/${name}
 
 rm -f ${target}.fast ${target}.cmp ${target}.taint ${target}.pin
+rm -f ${target}.fast.ir ${target}.taint.ir ${target}.pin.ir
 
 # export ANGORA_CUSTOM_FN_CONTEXT=0
 
-bin_dir=../bin/
+bin_dir=../../bin/
+ANGORA_USE_ASAN=1 USE_FAST=1 ${bin_dir}/angora-clang ${target}.c -S -emit-llvm -o ${target}.fast.ir
 ANGORA_USE_ASAN=1 USE_FAST=1 ${bin_dir}/angora-clang ${target}.c -lz -o ${target}.fast
+# USE_TRACK=1 ${bin_dir}/angora-clang ${target}.c -S -emit-llvm -o ${target}.taint.ir
 # USE_TRACK=1 ${bin_dir}/angora-clang ${target}.c -lz -o ${target}.taint
+USE_PIN=1 ${bin_dir}/angora-clang ${target}.c -S -emit-llvm -o ${target}.pin.ir
 USE_PIN=1 ${bin_dir}/angora-clang ${target}.c -lz -o ${target}.pin
 #LLVM_COMPILER=clang wllvm -O0 -g ${target}.c -lz -o ${target}
 #extract-bc ${target}

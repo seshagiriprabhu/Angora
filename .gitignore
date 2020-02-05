@@ -2,8 +2,11 @@
 **/*.rs.bk
 Cargo.lock
 .vscode
-*.taint
-*.fast
+*.taint*
+*.fast*
+*.pin*
+*.org*
+*.track*
 *.o
 *.so
 *.dwo
